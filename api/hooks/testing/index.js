@@ -8,9 +8,11 @@ module.exports = function (sails) {
 
     return {
 
+        // Default configuration for this hook
+        // This hook use config.testing namespace as configuration
         defaults: {
             testing: {
-                activated: false
+                activated: false // This hook should be activated intentionally (in /env/testing.js for example)
             },
         },
 
@@ -21,9 +23,8 @@ module.exports = function (sails) {
         initialize: function (cb) {
 
             if(sails.config.testing.activated){
-                //console.log(process.env);
-                //console.log(sails.config.testing);
 
+                // Add specific routes for testing
                 this.routes = {
                     before: {
 
@@ -34,8 +35,7 @@ module.exports = function (sails) {
                         '/auth/basic': function(req, res){
                             require(path.join(process.cwd(), 'api/policies/basicAuth'))(req, res, function(err, a){
                                 if(err){
-                                    console.log(err);
-                                    //next(err);
+                                    return res.serverError(err);
                                 }
                                 return res.ok();
                             });
