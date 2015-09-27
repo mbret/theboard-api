@@ -34,7 +34,7 @@ describe('integration.auth.basic', function() {
         });
 
         after(function(done){
-            sails.models.user.destroy(done);
+            sails.models.user.destroy(user, done);
         });
 
         it('should pass because no Basic auth asked', function(done){

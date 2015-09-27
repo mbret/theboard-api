@@ -18,10 +18,11 @@
 
 module.exports.policies = {
 
-   '*': false,
+    '*': false,
 
-   "auth": {
-      "signin": true
-   }
+    "auth": {
+        "signin": true,
+        "signup": true
+    }
 
 };

@@ -35,7 +35,7 @@ describe('integration.controllers.auth', function() {
         });
 
         after(function(done){
-            sails.models.user.destroy(done);
+            sails.models.user.destroy(user, done);
         });
 
         it('should return 400 (Invalid credentials)', function(done){
@@ -53,6 +53,43 @@ describe('integration.controllers.auth', function() {
             request(app).post('/auth/signin').send(user)
                 .expect(200, done);
         });
+    });
+
+    describe('register', function(){
+
+        var user = {
+            email: 'test@test.com',
+            password: 'password',
+        };
+
+        after(function(done){
+            sails.models.user.destroy(user, done);
+        });
+
+        it('should register account', function(done){
+            request(app).post('/auth/signup')
+                .send(user)
+                .expect(201)
+                .expect(function(res){
+                    res.body.should.not.be.empty;
+                    res.body.should.have.property('user');
+                    res.body.user.should.be.a('object');
+                    res.body.user.should.have.property('id');
+                    res.body.should.have.property('token');
+                    res.body.token.should.be.a('string');
+                })
+                .end(function(err, res){
+                    if(err) done(err);
+                    var id = res.body.user.id;
+                    sails.models.user.findOne(id)
+                        .then(function(user){
+                            expect(user).to.not.be.empty;
+                            done();
+                        })
+                        .catch(done);
+                });
+        });
+
     });
 
 });

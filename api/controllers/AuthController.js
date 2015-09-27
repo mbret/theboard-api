@@ -1,5 +1,22 @@
+'use strict';
+
 var validator = require('validator');
 var passport = require('passport');
+
+/**
+ *
+ * @param user
+ * @returns {{token: *, user: *}}
+ * @private
+ */
+function _generateResponseObject(user){
+    var token = passport.generateToken(user);
+
+    return {
+        token: token,
+        user: user
+    };
+}
 
 /**
  * Triggers when user authenticates via passport
@@ -17,12 +34,7 @@ function _onPassportAuth(req, res, error, user, info) {
     }
     if (!user) return res.badRequest(null, info.code, info.message);
 
-    var token = passport.generateToken(user);
-
-    return res.ok({
-        token: token,
-        user: user
-    });
+    return res.ok(_generateResponseObject(user));
 }
 
 /**
@@ -48,56 +60,30 @@ var AuthController = {
      * @returns {*|SendStream}
      */
     signup: function(req, res){
+
         var email = req.param('email');
         var password = req.param('password');
 
         // Email
         if( !validator.isEmail(email) ){
-            return res.badRequest();
+            return res.badRequest("Bad Email");
         }
 
         // Password must have at least 3 char
         if ( !validator.isLength(password, 3)) {
-            return res.badRequest();
+            return res.badRequest("Bad Password");
         }
 
         // Get default values like avatar / banner etc
         var values = {
-          email: email
+            email: email,
+            password: password
         };
 
         // Create the user and init everything necessary for application
-        User.createAndInit(values)
+        sails.models.user.register(values)
             .then(function(user){
-
-                Passport.create({
-                    protocol : 'local',
-                    password : password,
-                    user     : user.id
-                }, function (err, passport) {
-                    if (err) {
-                        // It could be invalid password here but we check before with validator
-                        return user.destroy(function (destroyErr) {
-                            if(destroyErr){
-                                sails.log.error(err);
-                            }
-                            return res.serverError(err);
-                        });
-                    }
-
-                    req.login(user, function(err){
-                        if(err){
-                            return res.serverError(err);
-                        }
-                        req.flash('success', 'Success.Auth.Register');
-                        var token = sails.services.auth.generateToken(user);
-                        return res.ok({
-                            token: token,
-                            user: user.toView(),
-                            redirect: sails.config.urls.app
-                        });
-                    });
-                });
+                return res.created(_generateResponseObject(user));
             })
             .catch(function(err){
                 if (err.code === 'E_VALIDATION') {
@@ -113,16 +99,7 @@ var AuthController = {
             })
     },
 
-    /**
-     *
-     * @param req
-     * @param res
-     */
-    logout: function (req, res) {
-        req.logout();
-        req.flash('success', 'Success.Auth.Logout');
-        res.redirect( sails.config.urls.signin );
-    },
+
 
     /**
      * Issue a new valid token.
