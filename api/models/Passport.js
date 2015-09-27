@@ -2,6 +2,7 @@
 
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
+var libUtil = require(LIB_DIR + '/util');
 
 /**
  * Passport Model
@@ -17,7 +18,7 @@ var passport = require('passport');
  * weight as possible as the application only needs to serialize and deserialize
  * the user, but not the authentication data, to and from the session.
  */
-var Passport = {
+module.exports = libUtil.extendModel(require(LIB_DIR + '/models'), {
     attributes: {
         // Required field: Protocol
         //
@@ -88,6 +89,4 @@ var Passport = {
     beforeUpdate: function (passport, next) {
         passport.hashPassword(passport, next);
     }
-};
-
-module.exports = Passport;
+});
