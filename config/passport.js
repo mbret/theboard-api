@@ -14,11 +14,21 @@
 
 module.exports.passport = {
 
-
+    // Used to hash password
     bcrypt: {
         rounds: 8
     },
 
+    // Used to generate json web token
+    jwt: {
+        secret: 'cfb30a124904ef2bf7de83d7f85e4f51',
+        options: {
+            expiresInSeconds: false, // Time interval in minutes when token will be expired or false if not expires
+            algorithm: "HS256" // Algorithm that using for signing JWT
+        }
+    },
+
+    // Used to authenticate request using several strategies
     strategies: {
 
         local: {

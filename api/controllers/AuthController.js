@@ -17,7 +17,7 @@ function _onPassportAuth(req, res, error, user, info) {
     }
     if (!user) return res.badRequest(null, info.code, info.message);
 
-    var token = sails.services.auth.generateToken(user);
+    var token = passport.generateToken(user);
 
     return res.ok({
         token: token,

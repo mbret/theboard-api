@@ -20,10 +20,28 @@ describe('integration.controllers.auth', function() {
 
     describe('login', function(){
 
+        var user = {
+            email: 'test@test.com',
+            password: 'password',
+        };
+
+        before(function(done) {
+            sails.models.user
+                .register(user)
+                .then(function(){
+                    done();
+                })
+                .catch(done);
+        });
+
+        after(function(done){
+            sails.models.user.destroy(done);
+        });
+
         it('should return 400 (Invalid credentials)', function(done){
             async.parallel([
                 function(cb){
-                    request(app).post('/auth/signin').send({email: 'sdfsdf', password: 'sdfsdf'})
+                    request(app).post('/auth/signin').send({email: 'foo', password: 'bar'})
                         .expect(400, cb);
                 }
             ], function(err){
@@ -31,10 +49,10 @@ describe('integration.controllers.auth', function() {
             });
         });
 
-        //it('should return 200 thanks to good credentials on classic route', function(done){
-        //    request(app).post('/auth/signin').send({email: sails.config.test.user.email, password: sails.config.test.userPassword})
-        //        .expect(200, done);
-        //});
+        it('should return 200 thanks to good credentials on classic route', function(done){
+            request(app).post('/auth/signin').send(user)
+                .expect(200, done);
+        });
     });
 
 });

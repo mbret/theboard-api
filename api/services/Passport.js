@@ -4,6 +4,8 @@ var path = require('path');
 var url = require('url');
 var passport = require('passport');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+var moment = require('moment');
 
 /**
  * Passport Service
@@ -359,6 +361,17 @@ passport.hashPassword = function(passport, next) {
         passport.password = hash;
         return next(null, passport);
     });
+};
+
+/**
+ *
+ * @param user
+ */
+passport.generateToken = function(user){
+    var config = sails.config.passport.jwt;
+    var issueDate = moment().utc().format();
+    var token = jwt.sign({user:user.id}, config.secret, config.options);
+    return token;
 };
 
 passport.serializeUser(function (user, next) {
