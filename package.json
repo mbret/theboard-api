@@ -1,0 +1,33 @@
+{
+  "name": "app",
+  "private": true,
+  "version": "0.0.0",
+  "description": "a Sails application",
+  "keywords": [],
+  "dependencies": {
+    "bcryptjs": "^2.3.0",
+    "grunt": "0.4.5",
+    "grunt-sync": "~0.2.3",
+    "include-all": "~0.1.6",
+    "passport": "^0.3.0",
+    "passport-http": "^0.3.0",
+    "rc": "~1.0.1",
+    "sails": "~0.12.0-rc3",
+    "sails-disk": "~0.10.7",
+    "validator": "^4.0.6"
+  },
+  "devDependencies": {
+    "supertest": "0.13.x"
+  },
+  "scripts": {
+    "debug": "node debug app.js",
+    "start": "sails lift"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/anonymous node/sails user/app.git"
+  },
+  "author": "anonymous node/sails user",
+  "license": ""
+}

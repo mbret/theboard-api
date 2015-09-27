@@ -1,0 +1,4 @@
+./test/tests
+--colors
+--recursive
+--timeout 5000
