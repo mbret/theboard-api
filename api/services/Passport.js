@@ -269,36 +269,48 @@ passport.loadStrategies = function () {
         var options = { passReqToCallback: true };
         var Strategy;
 
-        var protocol = strategies[key].protocol;
-        var callback = strategies[key].callback;
+        // Local strategy
+        if (key === 'local') {
+            _.extend(options, strategies[key].options);
 
-        if (!callback) {
-            callback = path.join('auth', key, 'callback');
+            Strategy = strategies[key].strategy;
+
+            passport.use(new Strategy(options, passport.protocols.local));
         }
+        // Fb, basic, etc
+        else{
+            var protocol = strategies[key].protocol; // auth protocol
+            var callback = strategies[key].callback;
 
-        Strategy = strategies[key].strategy;
+            if (!callback) {
+                callback = path.join('auth', key, 'callback');
+                //throw Error('No callback specified');
+            }
 
-        var baseUrl = sails.getBaseurl();
+            Strategy = strategies[key].strategy;
 
-        switch (protocol) {
-            case 'oauth':
-            case 'oauth2':
-                options.callbackURL = url.resolve(baseUrl, callback);
-                break;
+            var baseUrl = sails.getBaseurl();
 
-            case 'openid':
-                options.returnURL = url.resolve(baseUrl, callback);
-                options.realm     = baseUrl;
-                options.profile   = true;
-                break;
+            switch (protocol) {
+                case 'oauth':
+                case 'oauth2':
+                    options.callbackURL = url.resolve(baseUrl, callback);
+                    break;
+
+                case 'openid':
+                    options.returnURL = url.resolve(baseUrl, callback);
+                    options.realm     = baseUrl;
+                    options.profile   = true;
+                    break;
+            }
+
+            // Merge the default options with any options defined in the config. All
+            // defaults can be overridden, but I don't see a reason why you'd want to
+            // do that.
+            _.extend(options, strategies[key].options);
+
+            passport.use(new Strategy(options, passport.protocols[protocol]));
         }
-
-        // Merge the default options with any options defined in the config. All
-        // defaults can be overriden, but I don't see a reason why you'd want to
-        // do that.
-        _.extend(options, strategies[key].options);
-
-        passport.use(new Strategy(options, this.protocols[protocol]));
     }, this);
 };
 
@@ -333,22 +345,20 @@ passport.disconnect = function (req, res, next) {
  * @param {Function} next
  */
 passport.hashPassword = function(passport, next) {
-    var config = sails.config.auth.bcrypt;
-    var salt = config.salt || config.rounds;
-    if (passport.password) {
-        bcrypt.hash(passport.password, salt, function (err, hash) {
-            if (err) {
-                delete passport.password;
-                sails.log.error(err);
-                throw err;
-            }
-            passport.password = hash;
-            next(null, passport);
-        });
+    var config = sails.config.passport.bcrypt;
+    var salt = config.rounds;
+    if(!passport.password){
+        return next(new Error('No password set to passport entry'));
     }
-    else {
-        next(null, passport);
-    }
+    bcrypt.hash(passport.password, salt, function (err, hash) {
+        if (err) {
+            delete passport.password;
+            sails.log.error(err);
+            return next(err);
+        }
+        passport.password = hash;
+        return next(null, passport);
+    });
 };
 
 passport.serializeUser(function (user, next) {

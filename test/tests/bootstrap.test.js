@@ -7,6 +7,7 @@ process.env.NODE_ENV = 'testing';
 process.chdir(__dirname + '/../..');
 
 global.LIB_DIR = process.cwd() + '/lib';
+global.TEST_LIB_DIR = process.cwd() + '/test/lib';
 
 var path    = require('path');
 var Sails   = require('sails');

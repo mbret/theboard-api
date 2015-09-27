@@ -2,6 +2,30 @@ var validator = require('validator');
 var passport = require('passport');
 
 /**
+ * Triggers when user authenticates via passport
+ * This Bound for Controller
+ * @param {Object} req Request object Bound
+ * @param {Object} res Response object Bound
+ * @param {Object} error Error object
+ * @param {Object} user User profile
+ * @param {Object} info Info if some error occurs
+ * @private
+ */
+function _onPassportAuth(req, res, error, user, info) {
+    if (error){
+        return res.serverError(error);
+    }
+    if (!user) return res.badRequest(null, info.code, info.message);
+
+    var token = sails.services.auth.generateToken(user);
+
+    return res.ok({
+        token: token,
+        user: user
+    });
+}
+
+/**
  * Authentication Controller
  *
  *
@@ -14,19 +38,7 @@ var AuthController = {
      * @param res
      */
     signin: function(req, res){
-        passport.authenticate('local', function(err, user, info){
-            if (err){
-                return res.serverError(err);
-            }
-            if(!user){
-                return res.badRequest();
-            }
-            var token = sails.services.auth.generateToken(user);
-            return res.ok({
-                token: token,
-                user: user
-            })
-        })(req, res);
+        passport.authenticate('local', _onPassportAuth.bind(this, req, res))(req, res);
     },
 
     /**

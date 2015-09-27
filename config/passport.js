@@ -14,7 +14,22 @@
 
 module.exports.passport = {
 
+
+    bcrypt: {
+        rounds: 8
+    },
+
     strategies: {
+
+        local: {
+            strategy: require('passport-local').Strategy,
+            options: {
+                // Since we need to allow users to login using both usernames as well as
+                // emails, we'll set the username field to something more generic.
+                usernameField: 'email',
+                passwordField: 'password'
+            }
+        },
 
         basic: {
             strategy: require('passport-http').BasicStrategy,

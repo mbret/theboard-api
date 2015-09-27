@@ -7,4 +7,5 @@ var libUtil = require(LIB_DIR + '/util');
  */
 module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
 
+
 });

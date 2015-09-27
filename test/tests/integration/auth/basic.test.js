@@ -1,4 +1,5 @@
 var request = require('supertest');
+var helper  = require(TEST_LIB_DIR + '/helper');
 var app;
 
 describe('integration.auth.basic', function() {
@@ -9,7 +10,6 @@ describe('integration.auth.basic', function() {
     });
 
     after(function(done) {
-
         done();
     });
 
@@ -18,6 +18,24 @@ describe('integration.auth.basic', function() {
      * - The client provide email/password for each request
      */
     describe('basicAuth', function(){
+
+        var user = {
+            email: 'test@test.com',
+            password: 'password',
+        };
+
+        before(function(done) {
+            sails.models.user
+                .register(user)
+                .then(function(){
+                    done();
+                })
+                .catch(done);
+        });
+
+        after(function(done){
+            sails.models.user.destroy(done);
+        });
 
         it('should pass because no Basic auth asked', function(done){
             request(app).get('/auth/basic').set('Authorization', '').expect(200, done);
@@ -32,9 +50,9 @@ describe('integration.auth.basic', function() {
         });
 
         // use correct mail / password of the user
-        //it('should return 200 thanks to good credentials on classic route', function(done){
-        //    request(app).get('/auth/basic').send().set('Authorization', sails.config.test.userAuth).expect(200, done);
-        //});
+        it('should return 200 thanks to good credentials on classic route', function(done){
+            request(app).get('/auth/basic').send().set('Authorization', helper.hashBasicAccessAuth(user)).expect(200, done);
+        });
     });
 
 });
