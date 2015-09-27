@@ -20,6 +20,9 @@ module.exports = {
   // models: {
   //   connection: 'someMongodbServer'
   // }
+    models: {
+        migrate: 'alter'
+    },
 
     models: {
         migrate: 'alter'

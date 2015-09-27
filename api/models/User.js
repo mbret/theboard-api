@@ -1,11 +1,16 @@
-var fse = require('fs-extra');
+'use strict';
 
-var User = {
+var libUtil = require(LIB_DIR + '/util');
+
+/**
+ * User model
+ */
+module.exports = libUtil.extendModel(require(LIB_DIR + '/models/Passport'), {
+
     schema: true,
 
     attributes: {
-        email       : { type: 'email',  unique: true },
-        passports   : { collection: 'Passport', via: 'user' },
+
         firstName   : { type: 'string' },
         lastName    : { type: 'string' },
         locale      : { type:'string', defaultTo: 'en_US' },
@@ -76,6 +81,14 @@ var User = {
             console.log(data);
             return data;
 
+        },
+
+
+        toJSON: function () {
+            var user = this.toObject();
+            delete user.password;
+            user.gravatarUrl = this.getGravatarUrl();
+            return user;
         }
 
     },
@@ -120,6 +133,4 @@ var User = {
             });
     }
 
-};
-
-module.exports = User;
+});

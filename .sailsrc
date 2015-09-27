@@ -1,5 +1,13 @@
 {
-  "generators": {
-    "modules": {}
-  }
+    "generators": {
+        "modules": {}
+    },
+    "hooks": {
+        "session": false,
+        "sockets": false,
+        "pubsub": false,
+        "views": false,
+        "csrf": false,
+        "blueprints": false
+    }
 }

@@ -4,7 +4,7 @@
 var validator = require('validator');
 var path = require('path');
 
-module.exports = _.merge( _.cloneDeep( require(path.join(__dirname, '/bases/Model'))), {
+module.exports = {
 
     tableName: 'profile_widget',
     autoPK: true,
@@ -163,4 +163,4 @@ module.exports = _.merge( _.cloneDeep( require(path.join(__dirname, '/bases/Mode
         });
     },
 
-});
+};
