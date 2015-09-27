@@ -1,9 +1,11 @@
 'use strict';
 
-var crypto = require('crypto');
+var crypto  = require('crypto');
+var path    = require('path');
+var libUtil = require(LIB_DIR + '/util');
 
 /** @module User */
-module.exports = {
+module.exports = libUtil.extendModel(require(LIB_DIR + '/models'), {
     attributes: {
         username: {
             type: 'string',
@@ -54,4 +56,4 @@ module.exports = {
             });
         });
     }
-};
+});

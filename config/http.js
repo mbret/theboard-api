@@ -32,8 +32,6 @@ module.exports.http = {
 
     order: [
         'startRequestTimer',
-        'cookieParser',
-        'session',
         'passport',
         'myRequestLogger',
         'bodyParser',
@@ -43,8 +41,6 @@ module.exports.http = {
         'poweredBy',
         '$custom',
         'router',
-        'www',
-        'favicon',
         '404',
         '500'
     ],
