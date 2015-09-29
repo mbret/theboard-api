@@ -20,7 +20,7 @@
  * http://sailsjs.org/#!/documentation/concepts/Routes/RouteTargetSyntax.html
  */
 
-module.exports.routes = {
+exports.routes = {
 
     'post /auth/signin'             : 'AuthController.signin',
     'post /auth/signup'             : 'AuthController.signup',
