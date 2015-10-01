@@ -3,6 +3,7 @@
 var validator = require('validator');
 var async = require('async');
 var moment = require('moment');
+var passport = require('passport');
 
 /**
  *
