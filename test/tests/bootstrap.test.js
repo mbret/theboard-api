@@ -7,14 +7,16 @@ process.env.NODE_ENV = 'testing';
 process.chdir(__dirname + '/../..');
 
 global.LIB_DIR = process.cwd() + '/lib';
+global.TEST_LIB_DIR = process.cwd() + '/test/lib';
 
 var path    = require('path');
 var Sails   = require('sails');
+var rc      = require('rc');
 var sails;
 
 before(function(done) {
 
-    Sails.lift({}, function(err, server) {
+    Sails.lift(rc('sails'), function(err, server) {
         if (err) return done(err);
         sails = server;
         done();

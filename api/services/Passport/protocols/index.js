@@ -13,4 +13,5 @@
  */
 module.exports = {
     basic: require('./basic'),
+    local: require('./local'),
 };
