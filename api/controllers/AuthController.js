@@ -11,7 +11,6 @@ var passport = require('passport');
  */
 function _generateResponseObject(user){
     var token = passport.generateToken(user);
-
     return {
         token: token,
         user: user
@@ -34,6 +33,7 @@ function _onPassportAuth(req, res, error, user, info) {
     }
     if (!user) return res.badRequest(null, info.code, info.message);
 
+    console.log(user);
     return res.ok(_generateResponseObject(user));
 }
 
@@ -74,14 +74,12 @@ var AuthController = {
             return res.badRequest("Bad Password");
         }
 
-        // Get default values like avatar / banner etc
-        var values = {
-            email: email,
-            password: password
-        };
-
         // Create the user and init everything necessary for application
-        sails.models.user.register(values)
+        sails.models.user
+            .register({
+                email: email,
+                password: password
+            })
             .then(function(user){
                 return res.created(_generateResponseObject(user));
             })

@@ -32,6 +32,7 @@ module.exports = function (req, email, password, next) {
         if (!user) {
             return next(null, false, { code: 400 });
         }
+        console.log(user);
 
         sails.models.passport.findOne({
             protocol : 'local',
@@ -50,6 +51,7 @@ module.exports = function (req, email, password, next) {
                         return next(null, false, { code: 400 });
                     }
                     else {
+                        console.log(user);
                         return next(null, user);
                     }
                 });

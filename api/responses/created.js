@@ -12,7 +12,7 @@ module.exports = function sendCreated(data) {
     var res = this.res;
     var sails = req._sails;
 
-    sails.log.silly('res.created() :: Sending 201 ("CREATED") response');
+    sails.log.info('res.created() :: Sending 201 ("CREATED") response', data);
 
     // Set status code
     res.status(201);

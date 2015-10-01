@@ -374,18 +374,4 @@ passport.generateToken = function(user){
     return token;
 };
 
-passport.serializeUser(function (user, next) {
-    next(null, user.id);
-});
-
-passport.deserializeUser(function (id, next) {
-    return sails.models.user.findOne(id)
-        .then(function (user) {
-            next(null, user || null);
-            return user;
-        })
-        .catch(next)
-
-});
-
 module.exports = passport;
