@@ -18,7 +18,7 @@ describe('integration.controllers.auth', function() {
         done();
     });
 
-    describe('login', function(){
+    describe('signin', function(){
 
         var user = {
             email: 'test@test.com',
@@ -55,7 +55,7 @@ describe('integration.controllers.auth', function() {
         });
     });
 
-    describe('register', function(){
+    describe('signup', function(){
 
         var user = {
             email: 'test@test.com',
