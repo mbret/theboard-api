@@ -5,7 +5,7 @@ describe('integration', function() {
 
     describe("Server", function(){
         it('should ping the server', function(done){
-            request(sails.hooks.http.app).get('/ping').expect(200).end(done);
+            request(sails.hooks.http.app).get('/tests/ping').expect(200).end(done);
         });
     });
 

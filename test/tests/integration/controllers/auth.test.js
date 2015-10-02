@@ -25,17 +25,17 @@ describe('integration.controllers.auth', function() {
             password: 'password',
         };
 
-        before(function(done) {
+        before(function(done){
             sails.models.user
                 .register(user)
-                .then(function(){
+                .then(function(created){
                     done();
                 })
                 .catch(done);
         });
 
         after(function(done){
-            sails.models.user.destroy(user, done);
+            sails.models.user.destroy({}, done);
         });
 
         it('should return 400 (Invalid credentials)', function(done){
@@ -63,7 +63,7 @@ describe('integration.controllers.auth', function() {
         };
 
         after(function(done){
-            sails.models.user.destroy(user, done);
+            sails.models.user.destroy({}, done);
         });
 
         it('should register account', function(done){

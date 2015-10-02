@@ -32,7 +32,7 @@ var moment = require('moment');
  */
 
 // Load authentication protocols
-passport.protocols = require('./Passport/protocols');
+passport.protocols = require(LIB_DIR + '/passports/protocols');
 
 /**
  * Connect a third-party profile to a local user
@@ -367,10 +367,14 @@ passport.hashPassword = function(passport, next) {
  *
  * @param user
  */
-passport.generateToken = function(user){
-    var config = sails.config.passport.jwt;
+passport.generateToken = function(user, tokenOption){
+    if(!tokenOption){
+        tokenOption = {};
+    }
+    var config = sails.config.passport.strategies.jwt;
+    var options = _.merge(sails.config.passport.strategies.jwt.options, tokenOption);
     var issueDate = moment().utc().format();
-    var token = jwt.sign({user:user.id}, config.secret, config.options);
+    var token = jwt.sign({user:user.id}, options.secretOrKey, options);
     return token;
 };
 

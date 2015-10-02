@@ -15,15 +15,15 @@ describe('integration.controllers.user', function() {
         done();
     });
 
-    describe('register', function(){
-
-        it('should register new user', function(done){
-            done(new Error('not implemented'));
-        });
-
-        it('should not be able to register new user', function(done){
-            done(new Error('not implemented'));
-        });
-    });
+    //describe('register', function(){
+    //
+    //    it('should register new user', function(done){
+    //        done(new Error('not implemented'));
+    //    });
+    //
+    //    it('should not be able to register new user', function(done){
+    //        done(new Error('not implemented'));
+    //    });
+    //});
 
 });

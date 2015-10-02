@@ -28,18 +28,37 @@ module.exports = function (sails) {
                 this.routes = {
                     before: {
 
-                        '/ping': function (req, res) {
+                        '/tests/ping': function (req, res) {
                             return res.ok();
                         },
 
-                        '/auth/basic': function(req, res){
+                        '/tests/auth/basic': function(req, res){
                             require(path.join(process.cwd(), 'api/policies/basicAuth'))(req, res, function(err, a){
                                 if(err){
                                     return res.serverError(err);
                                 }
-                                return res.ok();
+                                require(path.join(process.cwd(), 'api/policies/isAuth'))(req, res, function(err, a){
+                                    if(err){
+                                        return res.serverError(err);
+                                    }
+                                    return res.ok();
+                                });
                             });
-                        }
+                        },
+
+                        '/tests/auth/jwt': function(req, res){
+                            require(path.join(process.cwd(), 'api/policies/jwtAuth'))(req, res, function(err, a){
+                                if(err){
+                                    return res.serverError(err);
+                                }
+                                require(path.join(process.cwd(), 'api/policies/isAuth'))(req, res, function(err, a){
+                                    if(err){
+                                        return res.serverError(err);
+                                    }
+                                    return res.ok();
+                                });
+                            });
+                        },
                     }
                 };
             }
