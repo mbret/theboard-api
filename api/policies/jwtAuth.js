@@ -21,9 +21,14 @@ module.exports = function(req, res, next){
     sails.log.info('jwtAuth -> authentication asked');
 
     passport.authenticate('jwt', { session: false }, function (err, user, info){
-        if (err) return next(err);
+        if (err){
+            sails.log.info('jwtAuth -> error', err);
+            return next(err);
+        }
 
         if(!user){
+            if(!info){ info = {}; }
+            sails.log.info("jwtAuth -> authenticatin failed. Either the jwt is invalid or doesn't belong to an user: Error: ", info.message);
             return res.unauthorized(info);
         }
         else{

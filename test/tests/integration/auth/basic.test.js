@@ -1,5 +1,6 @@
 var request = require('supertest');
 var helper  = require(TEST_LIB_DIR + '/helper');
+var async = require('async');
 var app;
 
 describe('integration.auth.basic', function() {
@@ -34,15 +35,20 @@ describe('integration.auth.basic', function() {
         });
 
         after(function(done){
-            sails.models.user.destroy(user, done);
-        });
-
-        it('should pass because no Basic auth asked', function(done){
-            request(app).get('/tests/auth/basic').set('Authorization', '').expect(200, done);
+            sails.models.user.destroy({}, done);
         });
 
         it('should return 401 because no Auth provided', function(done){
-            request(app).get('/tests/auth/basic').set('Authorization', 'Basic ').expect(401, done);
+            async.parallel([
+                function(cb){
+                    request(app).get('/tests/auth/basic').set('Authorization', '').expect(401, cb);
+                },
+                function(cb){
+                    request(app).get('/tests/auth/basic').set('Authorization', 'Basic ').expect(401, cb);
+                }
+            ], function(err){
+                done();
+            });
         });
 
         it('should return 401 (bad request)', function(done){
