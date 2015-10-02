@@ -46,6 +46,18 @@ module.exports.passport = {
             protocol: 'basic'
         },
 
+        jwt: {
+            strategy: require('passport-jwt').Strategy,
+            protocol: 'jwt',
+            options: {
+                // To set in local.js
+                // secretOrKey: 'mySecretKey',
+                audience: 'redh00d',
+                issuer: 'redh00d',
+                authScheme: 'JWT'
+            }
+        }
+
         //google: {
         //    name: 'Google',
         //    protocol: 'oauth2',

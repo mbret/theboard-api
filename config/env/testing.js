@@ -16,6 +16,16 @@ module.exports = {
 
     log: {
         level: 'warn'
+    },
+
+    passport: {
+        strategies: {
+            jwt: {
+                options:{
+                    secretOrKey: '0123456789',
+                }
+            }
+        }
     }
 
 };

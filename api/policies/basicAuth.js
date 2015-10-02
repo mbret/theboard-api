@@ -33,7 +33,7 @@ module.exports = function (req, res, next) {
         }
         else{
             req.user = user;
-            req.user.authenticated = true;
+            req.authenticated = true;
             return next();
         }
     })(req, res, next);
