@@ -22,6 +22,8 @@
 
 exports.routes = {
 
+    'get /users/:user'              : 'UserController.find',
+
     'post /auth/signin'             : 'AuthController.signin',
     'post /auth/signup'             : 'AuthController.signup',
     'get /auth/:provider'           : 'AuthController.provider',

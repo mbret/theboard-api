@@ -1,24 +1,25 @@
 'use strict';
 
 var libUtil = require(LIB_DIR + '/util');
+var LibUser = require(LIB_DIR + '/models/User');
 
 /**
  * User model
  */
-module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
+module.exports = libUtil.extendModel(LibUser, {
 
     schema: true,
 
     attributes: {
 
-        firstName   : { type: 'string' },
-        lastName    : { type: 'string' },
-        locale      : { type:'string', defaultTo: 'en_US' },
+        firstName   : { type: 'string', required: false },
+        lastName    : { type: 'string', required: false },
+        locale      : { type: 'string', required: false, defaultTo: 'en_US' },
         avatar      : { type: 'string', required: false },
         banner      : { type: 'string', required: false },
         address     : { type: 'string', required: false },
         settings    : { collection:'userSetting', via: 'user' },
-        profiles    : { collection: 'profile', via: 'user' },
+        profiles    : { collection: 'profile', via: 'user', required: false },
 
         /**
          * Return the value of the asked settings
@@ -58,7 +59,7 @@ module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
          * Return a user object for the view
          * all sensitive data are removed
          */
-        toView: function(){
+        toJSON: function(){
 
             // We need to clone it (problem with populate that will not show up on json)
             var data = _.cloneDeep(this.toObject());
@@ -78,18 +79,12 @@ module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
                 data.settings.push(setting.toView());
             });
 
+            data.gravatarUrl = this.getGravatarUrl();
+
             console.log(data);
             return data;
 
         },
-
-
-        toJSON: function () {
-            var user = this.toObject();
-            delete user.password;
-            user.gravatarUrl = this.getGravatarUrl();
-            return user;
-        }
 
     },
 
@@ -100,6 +95,7 @@ module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
         if(!values.banner){
             values.banner = sails.config.users.defaultAttributes.banner;
         }
+
         return cb();
     },
 
@@ -112,16 +108,19 @@ module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
      * @todo transactions , promises
      * @param data
      */
-    createAndInit: function(data){
+    register: function(data){
 
-        // create user
-        return sails.models.user.create(data)
+        var tmpUser = null;
+
+        return LibUser
+            .register(data)
             .then(function(user){
+
+                tmpUser = user;
 
                 // Create default profile
                 user.profiles.add( { name: 'Default', description: 'This is your first and default profile. You can add your own profile or edit / remove this profile.', default: true });
                 return user.save();
-
             })
             .then(function(user){
 
@@ -130,7 +129,14 @@ module.exports = libUtil.extendModel(require(LIB_DIR + '/models/User'), {
                     .then(function(){
                         return user;
                     })
-            });
+            })
+            .catch(function(err){
+                sails.log.error('An error occurred during user creation, object will be destroyed if exist');
+                if(tmpUser !== null){
+                    tmpUser.destroy();
+                }
+                throw err;
+            })
     }
 
 });
