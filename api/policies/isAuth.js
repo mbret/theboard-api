@@ -6,7 +6,7 @@
  */
 module.exports = function (req, res, next) {
 
-    if( req.user && req.authenticated === true){
+    if( req.authenticated === true){
         return next();
     }
 
