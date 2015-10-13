@@ -65,7 +65,7 @@ module.exports = libUtil.extendModel(LibUser, {
             var data = _.cloneDeep(this.toObject());
             var that = this;
 
-            data.profiles.forEach(function(profile){
+            _.forEach(data.profiles, function(profile){
                if(profile.default === true){
                    data.defaultProfile = profile.id;
                }

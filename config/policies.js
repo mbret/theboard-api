@@ -23,6 +23,8 @@ module.exports.policies = {
     "auth": {
         "signin": true,
         "signup": true
-    }
+    },
+
+    "user": ['jwtAuth', 'ipAuth', 'isAuth']
 
 };

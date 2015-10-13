@@ -1,34 +1,20 @@
 'use strict';
 
-//class UserController{
-//
-//    find(req, res){
-//        console.log('sdf');
-//        var id = req.param('id', null);
-//
-//        sails.models.user
-//            .find(id)
-//            .then(function(user){
-//                if(!user){
-//                    return res.notFound();
-//                }
-//                return res.ok(user.toJSON());
-//            })
-//            .catch(res.serverError);
-//    }
-//
-//
-//}
-//
-//module.exports = new UserController();
+var validator = require('validator');
 
 module.exports = {
+
     find: function(req, res){
-        console.log('sdf');
         var id = req.param('id', null);
 
+        console.log(id);
+        if(!validator.isNumeric(id)){
+            return res.badRequest('bad id');
+        }
+
         sails.models.user
-            .find(id)
+            .findOne(id)
+            .populate('profiles')
             .then(function(user){
                 if(!user){
                     return res.notFound();
@@ -37,4 +23,5 @@ module.exports = {
             })
             .catch(res.serverError);
     }
+
 };

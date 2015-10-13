@@ -22,7 +22,7 @@
 
 exports.routes = {
 
-    'get /users/:user'              : 'UserController.find',
+    'get /users/:id'                : 'UserController.find',
 
     'post /auth/signin'             : 'AuthController.signin',
     'post /auth/signup'             : 'AuthController.signup',
