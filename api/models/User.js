@@ -81,7 +81,6 @@ module.exports = libUtil.extendModel(LibUser, {
 
             data.gravatarUrl = this.getGravatarUrl();
 
-            console.log(data);
             return data;
 
         },
@@ -97,6 +96,10 @@ module.exports = libUtil.extendModel(LibUser, {
         }
 
         return cb();
+    },
+
+    afterDestroy: function(deletedRecord, cb){
+        cb();
     },
 
     /**
@@ -120,7 +123,11 @@ module.exports = libUtil.extendModel(LibUser, {
 
                 // Create default profile
                 user.profiles.add( { name: 'Default', description: 'This is your first and default profile. You can add your own profile or edit / remove this profile.', default: true });
-                return user.save();
+                return user
+                    .save()
+                    .catch(function(errs){
+                        return Promise.reject(errs[0].err);
+                    });
             })
             .then(function(user){
 
@@ -128,15 +135,15 @@ module.exports = libUtil.extendModel(LibUser, {
                 return sails.models.usersetting.createDefaultSettingsForUser(user.id, user.profiles[0])
                     .then(function(){
                         return user;
-                    })
+                    });
             })
             .catch(function(err){
                 sails.log.error('An error occurred during user creation, object will be destroyed if exist');
                 if(tmpUser !== null){
                     tmpUser.destroy();
                 }
-                throw err;
-            })
+                return Promise.reject(err);
+            });
     }
 
 });

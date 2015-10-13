@@ -195,7 +195,6 @@
                     _.forEach(options, function(option){
                         profileWidget.setOptionValue(option.id, option.value);
                     });
-                    console.log(profileWidget.options);
 
                     return profileWidget.save();
                 })

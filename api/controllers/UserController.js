@@ -7,7 +7,6 @@ module.exports = {
     find: function(req, res){
         var id = req.param('id', null);
 
-        console.log(id);
         if(!validator.isNumeric(id)){
             return res.badRequest('bad id');
         }

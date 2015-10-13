@@ -14,7 +14,7 @@ describe('integration.models.user', function() {
 
                     expect(user).to.exist;
                     expect(user).to.be.a('object');
-                    expect(user).to.have.include.keys('email', 'profiles', 'settings');
+                    expect(user).to.have.include.keys('email', 'profiles', 'settings', 'avatar', 'banner');
 
                     // should contain at least one profile
                     expect(user.profiles).to.not.be.empty;
